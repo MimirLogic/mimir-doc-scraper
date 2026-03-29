@@ -3,51 +3,82 @@ import time
 from dotenv import load_dotenv
 from google import genai
 from google.genai import types
-from pydantic import create_model
+from pydantic import BaseModel
 
-# 1. Load the secrets from your .env file into memory
+# 1. Load the secrets from your .env file
 load_dotenv() 
 
-# 2. Initialize the Gemini Client 
-# (It automatically finds GEMINI_API_KEY from the step above)
-client = genai.Client()
+# 2. Explicitly grab the key and check if it exists
+api_key = os.getenv("GEMINI_API_KEY")
+if not api_key:
+    print("CRITICAL ERROR: Python cannot find your API key in the .env file.")
+    exit()
 
-def extract_document_data(pdf_path: str, fields_to_extract: list[str]) -> dict:
+client = genai.Client(api_key=api_key)
+
+# --- Define the Strict Data Structure for the Weld Cert ---
+
+class ChemicalProperties(BaseModel):
+    c: str | None
+    mn: str | None
+    si: str | None
+    p: str | None
+    s: str | None
+    cr: str | None
+    ni: str | None
+    mo: str | None
+
+class MechanicalProperties(BaseModel):
+    grade: str | None
+    tensile: str | None
+    yield_strength: str | None 
+    reduction: str | None
+    elongation: str | None
+
+class WeldCertData(BaseModel):
+    customer: str | None
+    purchase_order: str | None
+    part_number: str | None
+    part_description: str | None
+    invoice_date: str | None
+    invoice_number: str | None
+    heat_number: str | None
+    quantity: str | None
+    chemical_properties: ChemicalProperties | None
+    mechanical_properties: MechanicalProperties | None
+
+# --- The Extraction Engine ---
+
+def extract_weld_cert_data(pdf_path: str) -> str:
     """
-    Takes a PDF and a list of requested fields, uses Gemini Vision to read it,
-    and returns a clean dictionary of the extracted data.
+    Reads a vendor invoice and extracts the exact fields needed 
+    to populate a Cox Industries CD Weld Stud Certification.
     """
-    print(f"[{pdf_path}] Uploading document to Gemini...")
+    print(f"[{pdf_path}] Uploading invoice to Gemini Vision...")
     
     try:
         # Upload the file to Google AI Studio
         uploaded_file = client.files.upload(file=pdf_path)
         
-        # Dynamically build the Pydantic Schema
-        schema_fields = {field_name: (str, ...) for field_name in fields_to_extract}
-        DynamicExtractionModel = create_model('DynamicExtractionModel', **schema_fields)
-
-        # Construct the Prompt
+        # Construct the Prompt for this specific task
         prompt = (
-            "You are a precision manufacturing data extraction assistant. "
-            "Analyze the attached document carefully. "
-            f"Extract the following exact fields: {', '.join(fields_to_extract)}. "
-            "If a requested field is entirely missing from the document, return 'NOT_FOUND'. "
+            "You are a highly accurate manufacturing data extraction assistant for Cox Industries. "
+            "Analyze the attached invoice carefully. "
+            "Extract the data required to fill out a Material Test Report / Certification. "
+            "Map the 'Bill To' name to the customer field. "
+            "If a requested field or chemical/mechanical property is missing, return 'N/A'. "
             "Do not guess or invent numbers."
         )
 
-        print(f"[{pdf_path}] Analyzing document layout and extracting requested fields...")
+        print(f"[{pdf_path}] Extracting structured form data...")
         
-        # Call the Model
+        # Call the Model and force it to use our WeldCertData structure
         response = client.models.generate_content(
             model='gemini-2.5-flash',
-            contents=[
-                uploaded_file,
-                prompt
-            ],
+            contents=[uploaded_file, prompt],
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
-                response_schema=DynamicExtractionModel,
+                response_schema=WeldCertData,
                 temperature=0.1, 
             ),
         )
@@ -61,20 +92,3 @@ def extract_document_data(pdf_path: str, fields_to_extract: list[str]) -> dict:
     except Exception as e:
         print(f"Error during extraction: {e}")
         return None
-
-# --- Test the Engine ---
-if __name__ == "__main__":
-    # Point this to a real test PDF on your machine
-    test_pdf = "sample_vendor_cert.pdf" 
-    
-    # What do you want to pull?
-    customer_request = ["heat_number", "part_number"]
-    
-    if os.path.exists(test_pdf):
-        print("Starting extraction engine...\n" + "-"*30)
-        result = extract_document_data(test_pdf, customer_request)
-        print("-" * 30)
-        print("Final Output:")
-        print(result)
-    else:
-        print(f"Setup Error: Please place a file named '{test_pdf}' in this folder to test.")
