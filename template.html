@@ -3,7 +3,7 @@
 <head>
     <style>
         body { font-family: 'Arial', sans-serif; color: #333; }
-        .container { width: 800px; margin: 0 auto; padding: 40px; border: 1px solid #ddd; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
+        .container { width: 800px; margin: 0 auto; padding: 40px; border: 1px solid #ddd; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); background-color: #ffffff; }
         .header { text-align: center; margin-bottom: 30px; }
         .header h1 { color: #8B0000; margin: 0; font-size: 36px; }
         .header p { margin: 5px 0; font-size: 14px; color: #555; }
@@ -15,7 +15,7 @@
         .footer-text { font-size: 12px; margin-top: 30px; text-align: justify; line-height: 1.5; }
         .made-in-usa { text-align: center; font-weight: bold; color: #006600; margin-top: 20px; }
         .label { font-weight: bold; }
-        .value { border-bottom: 1px solid #999; padding-left: 5px; color: #000; }
+        .value { border-bottom: 1px solid #999; padding-left: 5px; color: #000; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -41,24 +41,24 @@
 
         <div class="section-title">CERTIFIED MATERIAL TEST REPORT - CHEMICAL</div>
         <div class="chem-grid">
-            <div>C: {{ chemical_properties.c }}</div>
-            <div>Mn: {{ chemical_properties.mn }}</div>
-            <div>Si: {{ chemical_properties.si }}</div>
-            <div>P: {{ chemical_properties.p }}</div>
-            <div>S: {{ chemical_properties.s }}</div>
-            <div>Cr: {{ chemical_properties.cr }}</div>
-            <div>Ni: {{ chemical_properties.ni }}</div>
-            <div>Mo: {{ chemical_properties.mo }}</div>
+            <div>C: <span class="value">{{ chemical_properties.c }}</span></div>
+            <div>Mn: <span class="value">{{ chemical_properties.mn }}</span></div>
+            <div>Si: <span class="value">{{ chemical_properties.si }}</span></div>
+            <div>P: <span class="value">{{ chemical_properties.p }}</span></div>
+            <div>S: <span class="value">{{ chemical_properties.s }}</span></div>
+            <div>Cr: <span class="value">{{ chemical_properties.cr }}</span></div>
+            <div>Ni: <span class="value">{{ chemical_properties.ni }}</span></div>
+            <div>Mo: <span class="value">{{ chemical_properties.mo }}</span></div>
         </div>
         <p style="font-size: 11px; text-align: center; margin-top: 10px;">***(This material contains no mercury, mercury compound nor is it contaminated with either substance.)</p>
 
         <div class="section-title">CERTIFIED MATERIAL TEST REPORT - MECHANICAL PROPERTIES</div>
         <div class="mech-grid">
-            <div><span class="label">AISI GRADE:</span> {{ mechanical_properties.grade }}</div>
-            <div><span class="label">REDUCTION (%):</span> {{ mechanical_properties.reduction }}</div>
-            <div><span class="label">TENSILE:</span> {{ mechanical_properties.tensile }}</div>
-            <div><span class="label">ELONGATION (%):</span> {{ mechanical_properties.elongation }}</div>
-            <div><span class="label">YIELD:</span> {{ mechanical_properties.yield_strength }}</div>
+            <div><span class="label">AISI GRADE:</span> <span class="value">{{ mechanical_properties.grade }}</span></div>
+            <div><span class="label">REDUCTION (%):</span> <span class="value">{{ mechanical_properties.reduction }}</span></div>
+            <div><span class="label">TENSILE:</span> <span class="value">{{ mechanical_properties.tensile }}</span></div>
+            <div><span class="label">ELONGATION (%):</span> <span class="value">{{ mechanical_properties.elongation }}</span></div>
+            <div><span class="label">YIELD:</span> <span class="value">{{ mechanical_properties.yield_strength }}</span></div>
         </div>
 
         <div class="made-in-usa">Manufactured in the U.S.A.</div>
