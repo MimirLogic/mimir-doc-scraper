@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: 'Arial', sans-serif; color: #333; }
+        .container { width: 800px; margin: 0 auto; padding: 40px; border: 1px solid #ddd; box-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { color: #8B0000; margin: 0; font-size: 36px; }
+        .header p { margin: 5px 0; font-size: 14px; color: #555; }
+        .cert-title { text-align: center; font-weight: bold; margin: 20px 0; text-decoration: underline; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; font-size: 14px; }
+        .section-title { text-align: center; color: #0066cc; font-weight: bold; text-decoration: underline; margin-top: 20px; font-size: 14px; }
+        .chem-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; text-align: center; font-size: 13px; margin-top: 10px; }
+        .mech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; font-size: 13px; }
+        .footer-text { font-size: 12px; margin-top: 30px; text-align: justify; line-height: 1.5; }
+        .made-in-usa { text-align: center; font-weight: bold; color: #006600; margin-top: 20px; }
+        .label { font-weight: bold; }
+        .value { border-bottom: 1px solid #999; padding-left: 5px; color: #000; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Cox Industries</h1>
+            <p>24700 Wood CT, Macomb MI 48042</p>
+            <p>Phone: 586-749-6650 | Fax: 586-749-6066</p>
+        </div>
+
+        <div class="cert-title">CD WELD STUD CERTIFICATION</div>
+
+        <div class="grid-2">
+            <div><span class="label">Customer:</span> <span class="value">{{ customer }}</span></div>
+            <div><span class="label">Date:</span> <span class="value">{{ invoice_date }}</span></div>
+            <div><span class="label">Purchase Order:</span> <span class="value">{{ purchase_order }}</span></div>
+            <div><span class="label">Invoice #:</span> <span class="value">{{ invoice_number }}</span></div>
+            <div><span class="label">Part #:</span> <span class="value">{{ part_number }}</span></div>
+            <div><span class="label">Heat #:</span> <span class="value">{{ heat_number }}</span></div>
+            <div style="grid-column: span 2;"><span class="label">Quantity:</span> <span class="value">{{ quantity }}</span></div>
+            <div style="grid-column: span 2;"><span class="label">Part Description:</span> <span class="value">{{ part_description }}</span></div>
+        </div>
+
+        <div class="section-title">CERTIFIED MATERIAL TEST REPORT - CHEMICAL</div>
+        <div class="chem-grid">
+            <div>C: {{ chemical_properties.c }}</div>
+            <div>Mn: {{ chemical_properties.mn }}</div>
+            <div>Si: {{ chemical_properties.si }}</div>
+            <div>P: {{ chemical_properties.p }}</div>
+            <div>S: {{ chemical_properties.s }}</div>
+            <div>Cr: {{ chemical_properties.cr }}</div>
+            <div>Ni: {{ chemical_properties.ni }}</div>
+            <div>Mo: {{ chemical_properties.mo }}</div>
+        </div>
+        <p style="font-size: 11px; text-align: center; margin-top: 10px;">***(This material contains no mercury, mercury compound nor is it contaminated with either substance.)</p>
+
+        <div class="section-title">CERTIFIED MATERIAL TEST REPORT - MECHANICAL PROPERTIES</div>
+        <div class="mech-grid">
+            <div><span class="label">AISI GRADE:</span> {{ mechanical_properties.grade }}</div>
+            <div><span class="label">REDUCTION (%):</span> {{ mechanical_properties.reduction }}</div>
+            <div><span class="label">TENSILE:</span> {{ mechanical_properties.tensile }}</div>
+            <div><span class="label">ELONGATION (%):</span> {{ mechanical_properties.elongation }}</div>
+            <div><span class="label">YIELD:</span> {{ mechanical_properties.yield_strength }}</div>
+        </div>
+
+        <div class="made-in-usa">Manufactured in the U.S.A.</div>
+        <div class="section-title" style="color: #006600;">CERTIFICATE OF CONFORMANCE</div>
+        <div class="footer-text">
+            <p>All items furnished in this shipment are in full compliance with all purchase order specification requirements. The test reports supplied represent the actual attributes of the items furnished. The test results are in full compliance with all applicable specifications and purchase order requirements.</p>
+            <p>We certify that all material supplied under the order numbers above conforms to the applicable specifications listed and Cox Industries specifications, and is made from material described from heat numbers indicated, and with properties shown. Parts are free of mercury contamination. Original support records are on file at Cox Industries.</p>
+        </div>
+    </div>
+</body>
+</html>
