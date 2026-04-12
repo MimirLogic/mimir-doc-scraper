@@ -171,7 +171,7 @@ unknown — None of the above."""
         result = response.text.strip().lower().replace('"', '').replace("'", "")
         return result if result in ("mill_cert", "lab_report", "invoice") else "unknown"
     except Exception as e:
-        print(f"❌ Classification error: {e}")
+        st.error(f"❌ Classification error: {e}")
         return "unknown"
     finally:
         _cleanup(uploaded)
@@ -196,7 +196,7 @@ Extract ALL values exactly as printed. Include decimals. Check ALL pages. Return
         _cleanup(uploaded)
         return json.loads(response.text)
     except Exception as e:
-        print(f"❌ Mill cert error: {e}")
+       st.error(f"❌ Mill cert error: {e}")
         _cleanup(uploaded)
         return None
 
@@ -218,7 +218,7 @@ Use PSI values not MPa. Extract ALL samples. Return exact values."""
         _cleanup(uploaded)
         return json.loads(response.text)
     except Exception as e:
-        print(f"❌ Lab report error: {e}")
+       st.error(f"❌ Lab report error: {e}")
         _cleanup(uploaded)
         return None
 
@@ -239,7 +239,7 @@ For each line item: part number, part description, ship quantity, heat number. R
         _cleanup(uploaded)
         return json.loads(response.text)
     except Exception as e:
-        print(f"❌ Invoice error: {e}")
+       st.error(f"❌ Invoice error: {e}")
         _cleanup(uploaded)
         return None
 
