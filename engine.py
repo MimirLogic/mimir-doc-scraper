@@ -155,11 +155,13 @@ def _cleanup(f):
 def detect_document_type(file_path: str) -> str:
     # Filename hints first - fast path
     name = os.path.basename(file_path).lower()
-    if any(x in name for x in ["titan", "lab", "26-0", "26-1", "test-report", "lab-services"]):
+    # Titan lab reports often have patterns like "21029340-34sc", "26-0368", etc.
+    if any(x in name for x in ["titan", "lab", "test-report", "lab-services", "-34sc", "-1sc", "26-0", "26-1"]):
         return "lab_report"
-    if any(x in name for x in ["beta", "charter", "mill", "rel-", "release", "bol", "147018", "21029340"]):
+    # Beta/Charter mill certs
+    if any(x in name for x in ["beta", "charter", "rel-", "bol-", "mill-cert", "147018"]):
         return "mill_cert"
-    if any(x in name for x in ["invoice", "inv-", "inv_", "so700", "214"]):
+    if any(x in name for x in ["invoice", "inv-", "inv_", "so700"]):
         return "invoice"
 
     model = get_best_model()
