@@ -307,10 +307,15 @@ elif st.session_state.mode == "intake":
             lab = st.session_state.intake_lab
             if lab and lab.get("samples") and len(lab["samples"]) > 1:
                 samples = lab["samples"]
-                opts = [f"Sample {i+1}: {s.get('sample_id','?')} — Ø{s.get('size','?')}\"" for i,s in enumerate(samples)]
-                sel = st.radio("Test specimen:", opts, key="in_sample")
+                opts = [f"Sample {i+1}: {s.get('sample_id','?')} — Ø{s.get('size','?')}\" — {s.get('tensile_psi','?')} psi" for i,s in enumerate(samples)]
+                sel = st.radio("Test specimen (defaults to Sample 1):", opts, index=0, key="in_sample")
                 idx = opts.index(sel)
-                cert = reconcile_heat_record(st.session_state.intake_mill, lab, None, idx)
+                # Force re-reconcile and rebuild cert with selected sample
+                cert = reconcile_heat_record(st.session_state.intake_mill, lab, None, selected_sample_idx=idx)
+                st.info(f"📊 Lab values loaded: Tensile={cert.get('tensile')}, Yield={cert.get('yield_strength')}, Elongation={cert.get('elongation')}, Reduction={cert.get('reduction')}")
+            elif lab and lab.get("samples"):
+                cert = reconcile_heat_record(st.session_state.intake_mill, lab, None, selected_sample_idx=0)
+                st.info(f"📊 Lab values loaded: Tensile={cert.get('tensile')}, Yield={cert.get('yield_strength')}, Elongation={cert.get('elongation')}, Reduction={cert.get('reduction')}")
 
             mc = st.columns(2)
             with mc[0]:
