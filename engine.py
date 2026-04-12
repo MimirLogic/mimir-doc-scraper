@@ -25,8 +25,13 @@ def _get_api_key():
         return key
 
 
+_client_instance = None
+
 def _get_client():
-    return genai.Client(api_key=_get_api_key())
+    global _client_instance
+    if _client_instance is None:
+        _client_instance = genai.Client(api_key=_get_api_key())
+    return _client_instance
 
 
 _cached_model = None
