@@ -320,10 +320,16 @@ elif st.session_state.mode == "intake":
                 cert["elongation"] = st.text_input("Elongation %", cert.get("elongation",""), key="in_e")
                 cert["reduction"] = st.text_input("Reduction %", cert.get("reduction",""), key="in_r")
 
+        # Persist the reconciled cert to session state so the Save button has it
+        st.session_state["preview_cert"] = cert
+
         if SHEETS_ENABLED:
             st.write("")
             if st.button(f"💾 Save Heat #{heat} to Database"):
-                ok = save_heat_master(cert, status=status)
+                cert_to_save = st.session_state.get("preview_cert", cert)
+                st.write("DEBUG - About to save:")
+                st.json({k: cert_to_save.get(k, "MISSING") for k in ["heat_number","grade","c","mn","si","p","s","cr","ni","mo","tensile","yield_strength","elongation","reduction"]})
+                ok = save_heat_master(cert_to_save, status=status)
                 if ok:
                     st.success(f"✅ Heat #{heat} saved to Heat Master! Status: **{status}**")
                     st.balloons()
