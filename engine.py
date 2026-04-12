@@ -209,7 +209,9 @@ Extract ALL values exactly as printed. Include decimals. Check ALL pages. Return
         _cleanup(uploaded)
         return json.loads(response.text)
     except Exception as e:
-        print(f"❌ Mill cert error: {e}")
+        import traceback
+        st.error(f"Mill cert extraction failed: {type(e).__name__}: {e}")
+        st.code(traceback.format_exc())
         _cleanup(uploaded)
         return None
 
@@ -231,7 +233,9 @@ Use PSI values not MPa. Extract ALL samples. Return exact values."""
         _cleanup(uploaded)
         return json.loads(response.text)
     except Exception as e:
-        print(f"❌ Lab report error: {e}")
+        import traceback
+        st.error(f"Lab report extraction failed: {type(e).__name__}: {e}")
+        st.code(traceback.format_exc())
         _cleanup(uploaded)
         return None
 
@@ -252,7 +256,9 @@ For each line item: part number, part description, ship quantity, heat number. R
         _cleanup(uploaded)
         return json.loads(response.text)
     except Exception as e:
-        print(f"❌ Invoice error: {e}")
+        import traceback
+        st.error(f"Invoice extraction failed: {type(e).__name__}: {e}")
+        st.code(traceback.format_exc())
         _cleanup(uploaded)
         return None
 
