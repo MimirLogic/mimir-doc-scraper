@@ -17,13 +17,15 @@ load_dotenv()
 
 def _get_api_key():
     try:
-        return st.secrets["GEMINI_API_KEY"]
-    except Exception:
+        key = st.secrets["GEMINI_API_KEY"]
+        if not key or key.startswith("AIza") is False:
+            st.error(f"⚠️ GEMINI_API_KEY looks malformed (starts with: {key[:6] if key else 'EMPTY'})")
+        return key
+    except Exception as e:
         key = os.getenv("GEMINI_API_KEY")
         if not key:
-            st.error("GEMINI_API_KEY not found.")
+            st.error(f"⚠️ GEMINI_API_KEY not found in secrets: {e}")
         return key
-
 
 def _get_client():
     return genai.Client(api_key=_get_api_key())
