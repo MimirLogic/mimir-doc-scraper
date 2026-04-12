@@ -320,13 +320,33 @@ elif st.session_state.mode == "intake":
                 cert["elongation"] = st.text_input("Elongation %", value=str(cert.get("elongation","") or ""), key=f"in_e_{cert.get('heat_number','x')}")
                 cert["reduction"] = st.text_input("Reduction %", value=str(cert.get("reduction","") or ""), key=f"in_r_{cert.get('heat_number','x')}")
 
-        # Persist the reconciled cert to session state so the Save button has it
-        st.session_state["preview_cert"] = cert
+        # CRITICAL: Persist the FULLY reconciled cert (including lab sample mechanicals) to session state
+        # This must come AFTER the sample selector and mechanical text inputs so we capture the latest values
+        st.session_state["preview_cert"] = dict(cert)
 
         if SHEETS_ENABLED:
             st.write("")
             if st.button(f"💾 Save Heat #{heat} to Database"):
-                cert_to_save = st.session_state.get("preview_cert", cert)
+                # Rebuild cert FRESH from session state mill+lab data right at save time
+                # This guarantees we get the latest lab sample selection
+                sample_idx = 0
+                if st.session_state.intake_lab and st.session_state.intake_lab.get("samples"):
+                    samples = st.session_state.intake_lab["samples"]
+                    if len(samples) > 1:
+                        # Try to read the radio button selection from session state
+                        sel_key = f"in_sample"
+                        if sel_key in st.session_state:
+                            sel_val = st.session_state[sel_key]
+                            for i, s in enumerate(samples):
+                                if s.get("sample_id","") in sel_val:
+                                    sample_idx = i
+                                    break
+                cert_to_save = reconcile_heat_record(
+                    st.session_state.intake_mill,
+                    st.session_state.intake_lab,
+                    None,
+                    selected_sample_idx=sample_idx,
+                )
                 st.write("DEBUG - About to save:")
                 st.json({k: cert_to_save.get(k, "MISSING") for k in ["heat_number","grade","c","mn","si","p","s","cr","ni","mo","tensile","yield_strength","elongation","reduction"]})
                 ok = save_heat_master(cert_to_save, status=status)
