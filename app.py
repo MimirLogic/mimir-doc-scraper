@@ -218,7 +218,8 @@ elif st.session_state.mode == "intake":
     files = st.file_uploader("Drop mill certs and/or lab reports here",
                               type=["pdf","png","jpg","jpeg"], accept_multiple_files=True, key="intake_upload")
 
-   if files and st.button("🚀 Extract & Save to Database"):
+    if files and st.button("🚀 Extract & Save to Database"):
+        import traceback
         st.session_state.intake_mill = None
         st.session_state.intake_lab = None
         st.session_state.intake_docs = []
@@ -230,30 +231,30 @@ elif st.session_state.mode == "intake":
             try:
                 with open(tmp, "wb") as fh:
                     fh.write(f.getbuffer())
-                st.info(f"📄 Saved temp file: {tmp}")
-
-                import traceback
+                st.info(f"Saved temp file: {tmp}")
                 try:
                     doc_type, data = extract_document(tmp)
-                    st.info(f"🔍 Detected as: **{doc_type}**")
+                    st.info(f"Detected as: {doc_type}")
                     if data:
-                        st.success(f"✅ Got data from {f.name}")
+                        st.success(f"Got data from {f.name}")
                         st.json(data)
                         st.session_state.intake_docs.append({"filename": f.name, "doc_type": doc_type, "data": data})
-                        if doc_type == "mill_cert": st.session_state.intake_mill = data
-                        elif doc_type == "lab_report": st.session_state.intake_lab = data
+                        if doc_type == "mill_cert":
+                            st.session_state.intake_mill = data
+                        elif doc_type == "lab_report":
+                            st.session_state.intake_lab = data
                     else:
-                        st.error(f"❌ No data returned for {f.name} (doc_type was: {doc_type})")
+                        st.error(f"No data returned for {f.name} (doc_type was: {doc_type})")
                 except Exception as e:
-                    st.error(f"❌ Extraction crashed: {type(e).__name__}: {e}")
+                    st.error(f"Extraction crashed: {type(e).__name__}: {e}")
                     st.code(traceback.format_exc())
             except Exception as outer_e:
-                st.error(f"❌ Outer error: {outer_e}")
+                st.error(f"Outer error: {outer_e}")
+                st.code(traceback.format_exc())
             finally:
                 if os.path.exists(tmp):
                     os.remove(tmp)
-
-        progress.progress(1.0, "✅ Done!")
+        progress.progress(1.0, "Done!")
         st.write("---")
         st.write(f"Total documents extracted: {len(st.session_state.intake_docs)}")
 
