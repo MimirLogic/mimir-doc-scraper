@@ -148,28 +148,43 @@ def _cleanup(f):
 # ─── Classification ───
 
 def detect_document_type(file_path: str) -> str:
+    # Filename hints first - fast path
+    name = os.path.basename(file_path).lower()
+    if any(x in name for x in ["titan", "lab", "26-0", "26-1", "test-report", "lab-services"]):
+        return "lab_report"
+    if any(x in name for x in ["beta", "charter", "mill", "rel-", "release", "bol", "147018", "21029340"]):
+        return "mill_cert"
+    if any(x in name for x in ["invoice", "inv-", "inv_", "so700", "214"]):
+        return "invoice"
+
     model = get_best_model()
     uploaded = None
     try:
         uploaded = _upload_and_stabilize(file_path)
-        prompt = """Classify this document into ONE category. Respond with ONLY the category name:
+        prompt = """Look at this document and classify it. Respond with EXACTLY ONE of these words and nothing else: mill_cert, lab_report, invoice, or unknown.
 
-mill_cert — Certification of Analysis, Material Test Report, or Mill Certificate from a steel supplier (Beta Steel, Charter Steel, Nucor). Contains chemistry (C, Mn, P, S, Si). May include a Bill of Lading.
+Choose mill_cert if you see: chemistry data (Carbon, Manganese, Silicon, Phosphorus, Sulfur), heat numbers, steel mill names like Beta Steel or Charter Steel, Bill of Lading, Certification of Analysis, or material test report.
 
-lab_report — Lab Services Report from a testing laboratory (Titan Metallurgy). Contains tensile testing results.
+Choose lab_report if you see: tensile testing results, yield strength, elongation, reduction of area, lab services report, Titan Metallurgy, or ASTM E8 testing.
 
-invoice — Sales invoice from Cox Industries to a customer. Contains customer name, PO, invoice number, pricing.
+Choose invoice if you see: customer name, purchase order, invoice number, line items with quantities and prices, ship-to address, Cox Industries letterhead.
 
-unknown — None of the above."""
+Choose unknown only if none of the above clearly apply.
+
+Your response must be ONE WORD."""
 
         response = _get_client().models.generate_content(
             model=model, contents=[uploaded, prompt],
             config=types.GenerateContentConfig(temperature=0.0),
         )
-        result = response.text.strip().lower().replace('"', '').replace("'", "")
-        return result if result in ("mill_cert", "lab_report", "invoice") else "unknown"
+        result = response.text.strip().lower().replace('"', '').replace("'", "").replace(".", "").replace(",", "")
+        # Check substring match for safety
+        for valid in ("mill_cert", "lab_report", "invoice"):
+            if valid in result:
+                return valid
+        return "unknown"
     except Exception as e:
-        print(f"❌ Classification error: {e}")
+        print(f"Classification error: {e}")
         return "unknown"
     finally:
         _cleanup(uploaded)
