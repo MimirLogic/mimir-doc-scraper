@@ -298,10 +298,10 @@ elif st.session_state.mode == "intake":
             cc = st.columns(4)
             for i, k in enumerate(["c","mn","si","p","s","cr","ni","mo"]):
                 with cc[i%4]:
-                    cert[k] = st.text_input(k.upper(), cert.get(k,""), key=f"in_{k}")
+                    cert[k] = st.text_input(k.upper(), value=str(cert.get(k,"") or ""), key=f"in_{k}_{cert.get('heat_number','x')}")
         with col_r:
             st.markdown("**Mechanicals**")
-            cert["grade"] = st.text_input("Grade", cert.get("grade",""), key="in_grade")
+            cert["grade"] = st.text_input("Grade", value=str(cert.get("grade","") or ""), key=f"in_grade_{cert.get('heat_number','x')}")
 
             # Lab sample selector
             lab = st.session_state.intake_lab
@@ -314,11 +314,11 @@ elif st.session_state.mode == "intake":
 
             mc = st.columns(2)
             with mc[0]:
-                cert["tensile"] = st.text_input("Tensile (psi)", cert.get("tensile",""), key="in_t")
-                cert["yield_strength"] = st.text_input("Yield (psi)", cert.get("yield_strength",""), key="in_y")
+                cert["tensile"] = st.text_input("Tensile (psi)", value=str(cert.get("tensile","") or ""), key=f"in_t_{cert.get('heat_number','x')}")
+                cert["yield_strength"] = st.text_input("Yield (psi)", value=str(cert.get("yield_strength","") or ""), key=f"in_y_{cert.get('heat_number','x')}")
             with mc[1]:
-                cert["elongation"] = st.text_input("Elongation %", cert.get("elongation",""), key="in_e")
-                cert["reduction"] = st.text_input("Reduction %", cert.get("reduction",""), key="in_r")
+                cert["elongation"] = st.text_input("Elongation %", value=str(cert.get("elongation","") or ""), key=f"in_e_{cert.get('heat_number','x')}")
+                cert["reduction"] = st.text_input("Reduction %", value=str(cert.get("reduction","") or ""), key=f"in_r_{cert.get('heat_number','x')}")
 
         # Persist the reconciled cert to session state so the Save button has it
         st.session_state["preview_cert"] = cert
