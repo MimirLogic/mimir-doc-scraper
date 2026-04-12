@@ -17,15 +17,13 @@ load_dotenv()
 
 def _get_api_key():
     try:
-        key = st.secrets["GEMINI_API_KEY"]
-        if not key or key.startswith("AIza") is False:
-            st.error(f"⚠️ GEMINI_API_KEY looks malformed (starts with: {key[:6] if key else 'EMPTY'})")
-        return key
-    except Exception as e:
+        return st.secrets["GEMINI_API_KEY"]
+    except Exception:
         key = os.getenv("GEMINI_API_KEY")
         if not key:
-            st.error(f"⚠️ GEMINI_API_KEY not found in secrets: {e}")
+            st.error("GEMINI_API_KEY not found.")
         return key
+
 
 def _get_client():
     return genai.Client(api_key=_get_api_key())
@@ -171,7 +169,7 @@ unknown — None of the above."""
         result = response.text.strip().lower().replace('"', '').replace("'", "")
         return result if result in ("mill_cert", "lab_report", "invoice") else "unknown"
     except Exception as e:
-        st.error(f"❌ Classification error: {e}")
+        print(f"❌ Classification error: {e}")
         return "unknown"
     finally:
         _cleanup(uploaded)
@@ -196,7 +194,7 @@ Extract ALL values exactly as printed. Include decimals. Check ALL pages. Return
         _cleanup(uploaded)
         return json.loads(response.text)
     except Exception as e:
-       st.error(f"❌ Mill cert error: {e}")
+        print(f"❌ Mill cert error: {e}")
         _cleanup(uploaded)
         return None
 
@@ -218,7 +216,7 @@ Use PSI values not MPa. Extract ALL samples. Return exact values."""
         _cleanup(uploaded)
         return json.loads(response.text)
     except Exception as e:
-       st.error(f"❌ Lab report error: {e}")
+        print(f"❌ Lab report error: {e}")
         _cleanup(uploaded)
         return None
 
@@ -239,7 +237,7 @@ For each line item: part number, part description, ship quantity, heat number. R
         _cleanup(uploaded)
         return json.loads(response.text)
     except Exception as e:
-       st.error(f"❌ Invoice error: {e}")
+        print(f"❌ Invoice error: {e}")
         _cleanup(uploaded)
         return None
 
