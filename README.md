@@ -1,4 +1,4 @@
-# 🛡️ Cox Industries — Mill Cert Scraper
+# 🛡️ Mill Cert Scraper
 
 **AI-powered multi-document reconciliation for Weld Stud Certifications**
 
@@ -48,5 +48,3 @@ See **[DEPLOY.md](DEPLOY.md)** for Streamlit Cloud deployment (~20 min).
 Streamlit · Google Gemini AI · Pydantic · Jinja2 · gspread · Google Sheets
 
 ---
-
-*Cox Industries · 24700 Wood CT, Macomb MI 48042 · Powered by Mimir Logic*
