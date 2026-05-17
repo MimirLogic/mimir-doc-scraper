@@ -1,116 +1,156 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400&family=Playfair+Display:ital,wght@1,700&display=swap');
-        * { box-sizing: border-box; }
-        body { font-family: 'IBM Plex Sans', Arial, sans-serif; color: #222; margin: 0; padding: 0; font-size: 13px; line-height: 1.45; }
-        .page { width: 760px; margin: 0 auto; padding: 32px 40px 28px 40px; background: #fff; border: 1px solid #ccc; }
-        .header { text-align: center; padding-bottom: 12px; margin-bottom: 14px; border-bottom: 2.5px solid #8B0000; }
-        .header .company-name { font-family: 'Playfair Display', Georgia, serif; font-style: italic; font-weight: 700; font-size: 38px; color: #8B0000; margin: 0; }
-        .header .address { font-size: 11px; color: #555; margin: 2px 0 0 0; }
-        .cert-title { text-align: center; font-weight: 700; font-size: 14px; text-decoration: underline; margin: 14px 0 12px 0; }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; margin-bottom: 12px; font-size: 12.5px; }
-        .info-grid .row { display: flex; align-items: baseline; padding: 2px 0; }
-        .info-grid .row.full { grid-column: span 2; }
-        .info-grid .lbl { font-weight: 600; color: #444; white-space: nowrap; min-width: 110px; }
-        .info-grid .val { flex: 1; border-bottom: 1px solid #aaa; padding-left: 6px; font-family: 'IBM Plex Mono', monospace; font-weight: 500; color: #000; min-height: 16px; font-size: 12.5px; }
-        .info-triple { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px 18px; margin-bottom: 4px; font-size: 12.5px; }
-        .info-triple .row { display: flex; align-items: baseline; padding: 2px 0; }
-        .info-triple .lbl { font-weight: 600; color: #444; white-space: nowrap; }
-        .info-triple .val { flex: 1; border-bottom: 1px solid #aaa; padding-left: 6px; font-family: 'IBM Plex Mono', monospace; font-weight: 500; color: #000; min-height: 16px; }
-        .section-title { text-align: center; font-weight: 700; font-size: 12px; text-decoration: underline; margin: 16px 0 8px 0; }
-        .chem-row { display: flex; justify-content: space-between; gap: 8px; margin: 8px 0; }
-        .chem-cell { text-align: center; flex: 1; }
-        .chem-cell .el { font-weight: 600; color: #444; font-size: 11px; }
-        .chem-cell .cv { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 12.5px; color: #000; border-bottom: 1px solid #aaa; display: inline-block; min-width: 50px; padding: 0 4px; }
-        .mercury-note { font-size: 10.5px; text-align: center; margin: 10px 0 0 0; color: #555; }
-        .mech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 30px; margin: 8px 0; font-size: 12.5px; }
-        .mech-grid .row { display: flex; align-items: baseline; padding: 2px 0; }
-        .mech-grid .lbl { font-weight: 600; color: #444; white-space: nowrap; min-width: 130px; }
-        .mech-grid .val { flex: 1; border-bottom: 1px solid #aaa; padding-left: 6px; font-family: 'IBM Plex Mono', monospace; font-weight: 500; color: #000; }
-        .usa-line { text-align: center; font-size: 12px; font-style: italic; margin: 14px 0; color: #333; }
-        .conf-title { text-align: center; font-weight: 700; font-size: 13px; text-decoration: underline; margin: 14px 0 8px 0; }
-        .conf-text { font-size: 11px; text-align: justify; line-height: 1.55; color: #333; margin-bottom: 6px; }
-        .conf-text .spec-check { font-weight: 700; color: #8B0000; }
-        .sig-block { display: flex; justify-content: space-between; margin-top: 24px; font-size: 11px; color: #444; }
-        .sig-block .notary { line-height: 1.6; }
-        .sig-block .qm { text-align: right; padding-top: 20px; }
-        .sig-block .qm .line { border-top: 1px solid #333; padding-top: 4px; min-width: 220px; display: inline-block; }
-    </style>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@400&family=Share+Tech+Mono&display=swap');
+
+* { box-sizing: border-box; }
+body { font-family: 'IBM Plex Sans', Arial, sans-serif; color: #222; margin: 0; padding: 0; font-size: 13px; line-height: 1.45; }
+.page { width: 760px; margin: 0 auto; padding: 32px 40px 28px 40px; background: #fff; border: 1px solid #ccc; }
+
+.header { text-align: center; padding-bottom: 12px; margin-bottom: 14px; border-bottom: 2.5px solid #8A6A4A; }
+.header .company-name { font-family: 'Share Tech Mono', monospace; font-weight: 700; font-size: 32px; color: #2F2A25; margin: 0; letter-spacing: 3px; }
+.header .company-sub { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: #1FA3C9; letter-spacing: 4px; margin: 2px 0 4px 0; }
+.header .address { font-size: 11px; color: #555; margin: 2px 0 0 0; }
+.header .powered { font-size: 9px; color: #9A8F82; letter-spacing: 2px; margin-top: 4px; font-family: 'Share Tech Mono', monospace; }
+
+.cert-title { text-align: center; font-weight: 700; font-size: 14px; text-decoration: underline; margin: 14px 0 12px 0; }
+
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; margin-bottom: 12px; font-size: 12.5px; }
+.info-grid .row { display: flex; align-items: baseline; padding: 2px 0; }
+.info-grid .row.full { grid-column: span 2; }
+.info-grid .lbl { font-weight: 600; color: #444; white-space: nowrap; min-width: 110px; }
+.info-grid .val { flex: 1; border-bottom: 1px solid #aaa; padding-left: 6px; font-family: 'IBM Plex Mono', monospace; font-weight: 500; color: #000; min-height: 16px; font-size: 12.5px; }
+
+.info-triple { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px 18px; margin-bottom: 4px; font-size: 12.5px; }
+.info-triple .row { display: flex; align-items: baseline; padding: 2px 0; }
+.info-triple .lbl { font-weight: 600; color: #444; white-space: nowrap; }
+.info-triple .val { flex: 1; border-bottom: 1px solid #aaa; padding-left: 6px; font-family: 'IBM Plex Mono', monospace; font-weight: 500; color: #000; min-height: 16px; }
+
+.section-title { text-align: center; font-weight: 700; font-size: 12px; text-decoration: underline; margin: 16px 0 8px 0; }
+
+.chem-row { display: flex; justify-content: space-between; gap: 8px; margin: 8px 0; }
+.chem-cell { text-align: center; flex: 1; }
+.chem-cell .el { font-weight: 600; color: #444; font-size: 11px; }
+.chem-cell .cv { font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 12.5px; color: #000; border-bottom: 1px solid #aaa; display: inline-block; min-width: 50px; padding: 0 4px; }
+
+.mercury-note { font-size: 10.5px; text-align: center; margin: 10px 0 0 0; color: #555; }
+
+.mech-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 30px; margin: 8px 0; font-size: 12.5px; }
+.mech-grid .row { display: flex; align-items: baseline; padding: 2px 0; }
+.mech-grid .lbl { font-weight: 600; color: #444; white-space: nowrap; min-width: 130px; }
+.mech-grid .val { flex: 1; border-bottom: 1px solid #aaa; padding-left: 6px; font-family: 'IBM Plex Mono', monospace; font-weight: 500; color: #000; }
+
+.usa-line { text-align: center; font-size: 12px; font-style: italic; margin: 14px 0; color: #333; }
+
+.conf-title { text-align: center; font-weight: 700; font-size: 13px; text-decoration: underline; margin: 14px 0 8px 0; }
+.conf-text { font-size: 11px; text-align: justify; line-height: 1.55; color: #333; margin-bottom: 6px; }
+.conf-text .spec-check { font-weight: 700; color: #8A6A4A; }
+
+.sig-block { display: flex; justify-content: space-between; margin-top: 24px; font-size: 11px; color: #444; }
+.sig-block .notary { line-height: 1.6; }
+.sig-block .qm { text-align: right; padding-top: 20px; }
+.sig-block .qm .line { border-top: 1px solid #333; padding-top: 4px; min-width: 220px; display: inline-block; }
+
+.ml-mark { text-align: center; font-family: 'Share Tech Mono', monospace; font-size: 8px; color: #9A8F82; letter-spacing: 3px; margin-top: 16px; border-top: 1px solid #E7E1D6; padding-top: 6px; }
+</style>
 </head>
 <body>
-    <div class="page">
-        <div class="header">
-            <div class="company-name">Cox Industries</div>
-            <div class="address">24700 Wood CT, Macomb MI &nbsp;48042</div>
-            <div class="address">Phone: 586-749-6650 &nbsp;&nbsp;Fax: 586-749-6066</div>
-        </div>
-        <div class="cert-title">WELD STUD CERTIFICATION</div>
-        <div class="info-grid">
-            <div class="row"><span class="lbl">Customer:</span><span class="val">{{ customer }}</span></div>
-            <div class="row"><span class="lbl">Date:</span><span class="val">{{ date }}</span></div>
-            <div class="row"><span class="lbl">Purchase Order:</span><span class="val">{{ purchase_order }}</span></div>
-            <div class="row"><span class="lbl">Invoice #:</span><span class="val">{{ invoice_number }}</span></div>
-        </div>
-        <div class="info-triple">
-            <div class="row"><span class="lbl">Part #:&nbsp;</span><span class="val">{{ part_number }}</span></div>
-            <div class="row"><span class="lbl">Heat #:&nbsp;</span><span class="val">{{ heat_number }}</span></div>
-            <div class="row"><span class="lbl">Quantity:&nbsp;</span><span class="val">{{ quantity }}</span></div>
-        </div>
-        <div class="info-grid">
-            <div class="row full"><span class="lbl">Part Description:</span><span class="val">{{ part_description }}</span></div>
-        </div>
-        <div class="section-title">CERTIFIED MATERIAL TEST REPORT – CHEMICAL</div>
-        <div class="chem-row">
-            <div class="chem-cell"><span class="el">C:</span> <span class="cv">{{ c }}</span></div>
-            <div class="chem-cell"><span class="el">Mn:</span> <span class="cv">{{ mn }}</span></div>
-            <div class="chem-cell"><span class="el">Si:</span> <span class="cv">{{ si }}</span></div>
-            <div class="chem-cell"><span class="el">P:</span> <span class="cv">{{ p }}</span></div>
-            <div class="chem-cell"><span class="el">S:</span> <span class="cv">{{ s }}</span></div>
-            <div class="chem-cell"><span class="el">Cr:</span> <span class="cv">{{ cr }}</span></div>
-            <div class="chem-cell"><span class="el">Ni:</span> <span class="cv">{{ ni }}</span></div>
-            <div class="chem-cell"><span class="el">Mo:</span> <span class="cv">{{ mo }}</span></div>
-        </div>
-        <p class="mercury-note">***(This material contains no mercury, mercury compound nor is it contaminated with either substance.)</p>
-        <div class="section-title">CERTIFIED MATERIAL TEST REPORT – MECHANICAL PROPERTIES</div>
-        <div class="mech-grid">
-            <div class="row"><span class="lbl">AISI GRADE:</span><span class="val">{{ grade }}</span></div>
-            <div class="row"><span class="lbl">REDUCTION (%):</span><span class="val">{{ reduction }}</span></div>
-            <div class="row"><span class="lbl">TENSILE:</span><span class="val">{{ tensile }}</span></div>
-            <div class="row"><span class="lbl">ELONGATION (%):</span><span class="val">{{ elongation }}</span></div>
-            <div class="row"><span class="lbl">YIELD:</span><span class="val">{{ yield_strength }}</span></div>
-            <div class="row"></div>
-        </div>
-        <div class="usa-line">Melted and Manufactured in the U.S.A.</div>
-        <div class="conf-title">CERTIFICATE OF CONFORMANCE</div>
-        <div class="conf-text">
-            <p>Cox Industries, as a weld stud manufacturer, hereby certifies the stud welding product
-            furnished herewith was manufactured from a single heat (code) of material. All Cox
-            Industries headed studs are marked with a "C" for traceability. The certified chemical and
-            mechanical properties recorded hereon constitute a Certified Material Test
-            Report (CMTR) as required by the AWS D1.1 and D1.5. It is further certified these
-            products were fabricated from material conforming to (original and current revisions)
-            ASTM A29 {% if astm_a29 %}<span class="spec-check">✕</span>{% endif %},
-            ASTM A108 {% if astm_a108 %}<span class="spec-check">✕</span>{% endif %},
-            ASTM A276 {% if astm_a276 %}<span class="spec-check">✕</span>{% endif %},
-            ASTM A320 {% if astm_a320 %}<span class="spec-check">✕</span>{% endif %},
-            ASTM A496 {% if astm_a496 %}<span class="spec-check">✕</span>{% endif %},
-            ASTM A1044 {% if astm_a1044 %}<span class="spec-check">✕</span>{% endif %},
-            AASHTO M169 {% if aashto_m169 %}<span class="spec-check">✕</span>{% endif %},
-            and {{ additional_spec }}, and were tested in
-            compliance with AWS D1.1 and D1.5 (original and current revisions).</p>
-            <p>Additionally, we do hereby certify that all products furnished within comply with
-            the current "Buy America" requirements of 23 CRF 635.410. This material was
-            processed in accordance with the quality standards and requirements set forth in
-            Cox Industries Quality Control standards and customer purchase order
-            requirements. We certify the above analysis to be a true and correct statement of
-            the facts as they are known.</p>
-        </div>
-        <div class="sig-block">
-            <div class="notary">COLLENE FORDT<br>Notary Public, State of MI<br>County of St. Clair<br>My Commission Expires Aug 06, 2030<br>Acting in County of Macomb</div>
-            <div class="qm"><div class="line">Corey Makar - Quality Manager</div></div>
-        </div>
+<div class="page">
+
+  <div class="header">
+    <div class="company-name">MIMIR METALS</div>
+    <div class="company-sub">WELD STUD MANUFACTURING</div>
+    <div class="address">1 Industrial Parkway, Warren MI 48092</div>
+    <div class="address">Phone: 586-555-0190 &nbsp;&nbsp;Fax: 586-555-0191</div>
+    <div class="powered">POWERED BY MIMIR LOGIC</div>
+  </div>
+
+  <div class="cert-title">WELD STUD CERTIFICATION</div>
+
+  <div class="info-grid">
+    <div class="row"><span class="lbl">Customer:</span><span class="val">{{ customer }}</span></div>
+    <div class="row"><span class="lbl">Date:</span><span class="val">{{ date }}</span></div>
+    <div class="row"><span class="lbl">Purchase Order:</span><span class="val">{{ purchase_order }}</span></div>
+    <div class="row"><span class="lbl">Invoice #:</span><span class="val">{{ invoice_number }}</span></div>
+  </div>
+
+  <div class="info-triple">
+    <div class="row"><span class="lbl">Part #:&nbsp;</span><span class="val">{{ part_number }}</span></div>
+    <div class="row"><span class="lbl">Heat #:&nbsp;</span><span class="val">{{ heat_number }}</span></div>
+    <div class="row"><span class="lbl">Quantity:&nbsp;</span><span class="val">{{ quantity }}</span></div>
+  </div>
+
+  <div class="info-grid">
+    <div class="row full"><span class="lbl">Part Description:</span><span class="val">{{ part_description }}</span></div>
+  </div>
+
+  <div class="section-title">CERTIFIED MATERIAL TEST REPORT – CHEMICAL</div>
+  <div class="chem-row">
+    <div class="chem-cell"><span class="el">C:</span> <span class="cv">{{ c }}</span></div>
+    <div class="chem-cell"><span class="el">Mn:</span> <span class="cv">{{ mn }}</span></div>
+    <div class="chem-cell"><span class="el">Si:</span> <span class="cv">{{ si }}</span></div>
+    <div class="chem-cell"><span class="el">P:</span> <span class="cv">{{ p }}</span></div>
+    <div class="chem-cell"><span class="el">S:</span> <span class="cv">{{ s }}</span></div>
+    <div class="chem-cell"><span class="el">Cr:</span> <span class="cv">{{ cr }}</span></div>
+    <div class="chem-cell"><span class="el">Ni:</span> <span class="cv">{{ ni }}</span></div>
+    <div class="chem-cell"><span class="el">Mo:</span> <span class="cv">{{ mo }}</span></div>
+  </div>
+  <p class="mercury-note">***(This material contains no mercury, mercury compound nor is it contaminated with either substance.)</p>
+
+  <div class="section-title">CERTIFIED MATERIAL TEST REPORT – MECHANICAL PROPERTIES</div>
+  <div class="mech-grid">
+    <div class="row"><span class="lbl">AISI GRADE:</span><span class="val">{{ grade }}</span></div>
+    <div class="row"><span class="lbl">REDUCTION (%):</span><span class="val">{{ reduction }}</span></div>
+    <div class="row"><span class="lbl">TENSILE:</span><span class="val">{{ tensile }}</span></div>
+    <div class="row"><span class="lbl">ELONGATION (%):</span><span class="val">{{ elongation }}</span></div>
+    <div class="row"><span class="lbl">YIELD:</span><span class="val">{{ yield_strength }}</span></div>
+    <div class="row"></div>
+  </div>
+
+  <div class="usa-line">Melted and Manufactured in the U.S.A.</div>
+
+  <div class="conf-title">CERTIFICATE OF CONFORMANCE</div>
+  <div class="conf-text">
+    <p>Mimir Metals, as a weld stud manufacturer, hereby certifies the stud welding product
+    furnished herewith was manufactured from a single heat (code) of material. All Mimir
+    Metals headed studs are marked with an "M" for traceability. The certified chemical and
+    mechanical properties recorded hereon constitute a Certified Material Test
+    Report (CMTR) as required by the AWS D1.1 and D1.5. It is further certified these
+    products were fabricated from material conforming to (original and current revisions)
+    ASTM A29 {% if astm_a29 %}<span class="spec-check">✕</span>{% endif %},
+    ASTM A108 {% if astm_a108 %}<span class="spec-check">✕</span>{% endif %},
+    ASTM A276 {% if astm_a276 %}<span class="spec-check">✕</span>{% endif %},
+    ASTM A320 {% if astm_a320 %}<span class="spec-check">✕</span>{% endif %},
+    ASTM A496 {% if astm_a496 %}<span class="spec-check">✕</span>{% endif %},
+    ASTM A1044 {% if astm_a1044 %}<span class="spec-check">✕</span>{% endif %},
+    AASHTO M169 {% if aashto_m169 %}<span class="spec-check">✕</span>{% endif %},
+    and {{ additional_spec }}, and were tested in
+    compliance with AWS D1.1 and D1.5 (original and current revisions).</p>
+
+    <p>Additionally, we do hereby certify that all products furnished within comply with
+    the current "Buy America" requirements of 23 CRF 635.410. This material was
+    processed in accordance with the quality standards and requirements set forth in
+    Mimir Metals Quality Control standards and customer purchase order
+    requirements. We certify the above analysis to be a true and correct statement of
+    the facts as they are known.</p>
+
+    <p>The test reports supplied represent the actual attributes of the items furnished.
+    The test results are in full compliance with all applicable specifications and
+    purchase order requirements.</p>
+  </div>
+
+  <div class="sig-block">
+    <div class="notary">
+      AUTHORIZED REPRESENTATIVE<br>
+      Mimir Metals Quality Division<br>
+      Warren, Michigan 48092<br>
     </div>
+    <div class="qm"><div class="line">Quality Manager — Mimir Metals</div></div>
+  </div>
+
+  <div class="ml-mark">MIMIR METALS · WARREN MI · MIMIR LOGIC DOCUMENT SYSTEM</div>
+
+</div>
 </body>
 </html>
