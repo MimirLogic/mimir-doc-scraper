@@ -1,8 +1,10 @@
 """
-Cox Industries — Mill Cert Scraper
+Mimir Metals — Mill Cert Scraper
+Powered by Mimir Logic
+
 Two-mode workflow:
-  MODE 1 — INTAKE: Upload mill certs + lab reports → build Heat Master database
-  MODE 2 — GENERATE: Select heat from database + add invoice details → produce customer cert
+MODE 1 — INTAKE: Upload mill certs + lab reports → build Heat Master database
+MODE 2 — GENERATE: Select heat from database + add invoice details → produce customer cert
 """
 
 import streamlit as st
@@ -22,83 +24,89 @@ try:
 except Exception:
     pass
 
-st.set_page_config(page_title="Cox Industries | Mill Cert Scraper", page_icon="🛡️", layout="wide",
-                    initial_sidebar_state="expanded" if SHEETS_ENABLED else "collapsed")
+st.set_page_config(
+    page_title="Mimir Metals | Mill Cert Scraper",
+    page_icon="⚙️",
+    layout="wide",
+    initial_sidebar_state="expanded" if SHEETS_ENABLED else "collapsed"
+)
 
 # ─── Styling ───
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
-    .main { background-color: #f5f5f0; }
-    .block-container { max-width: 1200px; padding-top: 1.5rem; }
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
 
-    .cox-header {
-        background: linear-gradient(135deg, #8B0000 0%, #B71C1C 40%, #D2232A 100%);
-        color: white; padding: 1.2rem 2rem; border-radius: 0 0 10px 10px;
-        margin: -2rem -1rem 1.2rem -1rem;
-        box-shadow: 0 4px 20px rgba(139, 0, 0, 0.35);
-        font-family: 'IBM Plex Sans', sans-serif;
-        display: flex; justify-content: space-between; align-items: center;
-    }
-    .cox-header h1 { color: white !important; font-size: 1.5rem; font-weight: 700; margin: 0; }
-    .cox-header p { color: rgba(255,255,255,0.8); font-size: 0.82rem; margin: 0.2rem 0 0 0; }
-    .cox-header .badge {
-        background: rgba(255,255,255,0.15); padding: 0.25rem 0.7rem;
-        border-radius: 20px; font-size: 0.72rem; font-family: 'IBM Plex Mono', monospace;
-        margin-left: 6px;
-    }
+.main { background-color: #1a1612; }
+.block-container { max-width: 1200px; padding-top: 1.5rem; }
 
-    .mode-card {
-        background: white; border-radius: 10px; padding: 1.5rem;
-        border: 2px solid #e0e0e0; text-align: center;
-        font-family: 'IBM Plex Sans', sans-serif;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        transition: all 0.2s;
-    }
-    .mode-card:hover { border-color: #D2232A; box-shadow: 0 4px 16px rgba(178,28,28,0.15); }
-    .mode-card h3 { margin: 0.5rem 0 0.3rem 0; color: #222; }
-    .mode-card p { font-size: 0.85rem; color: #666; margin: 0; }
+.ml-header {
+    background: linear-gradient(135deg, #0E2A3A 0%, #1a3a4a 40%, #8A6A4A 100%);
+    color: white; padding: 1.2rem 2rem; border-radius: 0 0 10px 10px;
+    margin: -2rem -1rem 1.2rem -1rem;
+    box-shadow: 0 4px 20px rgba(46,197,255,0.15);
+    font-family: 'IBM Plex Sans', sans-serif;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 2px solid #2EC5FF;
+}
+.ml-header h1 { color: #2EC5FF !important; font-size: 1.5rem; font-weight: 700; margin: 0; font-family: 'Share Tech Mono', monospace; }
+.ml-header .sub { color: rgba(231,225,214,0.7); font-size: 0.82rem; margin: 0.2rem 0 0 0; font-family: 'Share Tech Mono', monospace; }
+.ml-header .badge {
+    background: rgba(46,197,255,0.15); padding: 0.25rem 0.7rem;
+    border-radius: 20px; font-size: 0.72rem; font-family: 'Share Tech Mono', monospace;
+    margin-left: 6px; border: 1px solid rgba(46,197,255,0.3); color: #2EC5FF;
+}
 
-    .source-card {
-        background: white; border-left: 4px solid #ccc; border-radius: 0 6px 6px 0;
-        padding: 0.7rem 1rem; margin-bottom: 0.5rem; font-family: 'IBM Plex Sans', sans-serif;
-        font-size: 0.82rem; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    }
-    .source-card.mill { border-left-color: #1565C0; }
-    .source-card.lab { border-left-color: #F57F17; }
-    .source-card.invoice { border-left-color: #2E7D32; }
-    .source-card .doc-type { font-weight: 700; text-transform: uppercase; font-size: 0.68rem; letter-spacing: 1px; margin-bottom: 0.2rem; }
-    .source-card.mill .doc-type { color: #1565C0; }
-    .source-card.lab .doc-type { color: #F57F17; }
-    .source-card.invoice .doc-type { color: #2E7D32; }
+.mode-card {
+    background: #2F2A25; border-radius: 10px; padding: 1.5rem;
+    border: 2px solid #4a3f35; text-align: center;
+    font-family: 'IBM Plex Sans', sans-serif;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transition: all 0.2s;
+}
+.mode-card:hover { border-color: #2EC5FF; box-shadow: 0 4px 16px rgba(46,197,255,0.15); }
+.mode-card h3 { margin: 0.5rem 0 0.3rem 0; color: #E7E1D6; }
+.mode-card p { font-size: 0.85rem; color: #9A8F82; margin: 0; }
 
-    .stButton > button {
-        background: linear-gradient(135deg, #B71C1C, #D2232A) !important;
-        color: white !important; border: none !important; border-radius: 8px !important;
-        font-family: 'IBM Plex Sans', sans-serif !important; font-weight: 600 !important;
-        font-size: 0.9rem !important; padding: 0.6rem 1.2rem !important; width: 100% !important;
-        box-shadow: 0 2px 8px rgba(178,28,28,0.25) !important;
-    }
-    .stDownloadButton > button {
-        background: linear-gradient(135deg, #1B5E20, #2E7D32) !important;
-        color: white !important; border: none !important; border-radius: 8px !important;
-        font-family: 'IBM Plex Sans', sans-serif !important; font-weight: 600 !important; width: 100% !important;
-    }
-    h2, h3, h4 { font-family: 'IBM Plex Sans', sans-serif !important; color: #333 !important; font-weight: 600 !important; }
-    .cox-footer {
-        text-align: center; font-family: 'IBM Plex Mono', monospace;
-        font-size: 0.68rem; color: #bbb; margin-top: 2rem; padding: 0.8rem; border-top: 1px solid #e0e0e0;
-    }
+.source-card {
+    background: #2F2A25; border-left: 4px solid #4a3f35; border-radius: 0 6px 6px 0;
+    padding: 0.7rem 1rem; margin-bottom: 0.5rem; font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.82rem; box-shadow: 0 1px 3px rgba(0,0,0,0.3); color: #E7E1D6;
+}
+.source-card.mill { border-left-color: #2EC5FF; }
+.source-card.lab { border-left-color: #8A6A4A; }
+.source-card.invoice { border-left-color: #1FA3C9; }
+.source-card .doc-type { font-weight: 700; text-transform: uppercase; font-size: 0.68rem; letter-spacing: 1px; margin-bottom: 0.2rem; font-family: 'Share Tech Mono', monospace; }
+.source-card.mill .doc-type { color: #2EC5FF; }
+.source-card.lab .doc-type { color: #8A6A4A; }
+.source-card.invoice .doc-type { color: #1FA3C9; }
+
+.stButton > button {
+    background: linear-gradient(135deg, #0E2A3A, #1FA3C9) !important;
+    color: #E7E1D6 !important; border: 1px solid #2EC5FF !important; border-radius: 8px !important;
+    font-family: 'Share Tech Mono', monospace !important; font-weight: 600 !important;
+    font-size: 0.9rem !important; padding: 0.6rem 1.2rem !important; width: 100% !important;
+    box-shadow: 0 2px 8px rgba(46,197,255,0.2) !important;
+}
+.stDownloadButton > button {
+    background: linear-gradient(135deg, #2F2A25, #8A6A4A) !important;
+    color: #E7E1D6 !important; border: 1px solid #8A6A4A !important; border-radius: 8px !important;
+    font-family: 'Share Tech Mono', monospace !important; font-weight: 600 !important; width: 100% !important;
+}
+h2, h3, h4 { font-family: 'IBM Plex Sans', sans-serif !important; color: #E7E1D6 !important; font-weight: 600 !important; }
+
+.ml-footer {
+    text-align: center; font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem; color: #4a3f35; margin-top: 2rem; padding: 0.8rem;
+    border-top: 1px solid #2F2A25; letter-spacing: 2px;
+}
 </style>
 """, unsafe_allow_html=True)
-
 
 # ─── Session State ───
 for k, v in {"mode": None, "intake_docs": [], "intake_mill": None, "intake_lab": None,
              "cert_record": None, "cert_step": 1, "invoice_data": None}.items():
     if k not in st.session_state:
         st.session_state[k] = v
-
 
 # ─── SIDEBAR ───
 if SHEETS_ENABLED:
@@ -113,7 +121,6 @@ if SHEETS_ENABLED:
                 st.caption(f"{icon} **{h.get('Heat Number')}** — {h.get('Grade','')} — {status}")
         else:
             st.caption("No heats yet. Use Intake mode to add them.")
-
         st.markdown("---")
         certs = get_cert_log()
         if certs:
@@ -127,20 +134,18 @@ else:
         st.markdown("### ⚠️ Offline Mode")
         st.caption("Google Sheets not configured. See DEPLOY.md.")
 
-
 # ─── HEADER ───
 model_name = get_best_model()
 sheets_badge = "☁️ Sheets" if SHEETS_ENABLED else "💻 Local"
 st.markdown(f"""
-<div class="cox-header">
+<div class="ml-header">
     <div>
-        <h1>🛡️ Cox Industries — Mill Cert Scraper</h1>
-        <p>Build the heat database first, generate customer certs when orders ship</p>
+        <h1>⚙️ MIMIR METALS — MILL CERT SCRAPER</h1>
+        <div class="sub">Build the heat database first · Generate customer certs when orders ship</div>
     </div>
-    <div><span class="badge">⚡ {model_name}</span><span class="badge">{sheets_badge}</span></div>
+    <div><span class="badge">⚡ {model_name}</span><span class="badge">{sheets_badge}</span><span class="badge">MIMIR LOGIC</span></div>
 </div>
 """, unsafe_allow_html=True)
-
 
 # ================================================================
 # MODE SELECT
@@ -178,7 +183,6 @@ if st.session_state.mode is None:
             st.session_state.cert_step = 1
             st.rerun()
 
-    # Quick stats
     if SHEETS_ENABLED:
         st.write("")
         heats = get_all_heats()
@@ -191,7 +195,6 @@ if st.session_state.mode is None:
         with c3:
             certs = get_cert_log()
             st.metric("Certs Generated", len(certs))
-
 
 # ================================================================
 # MODE 1: INTAKE — Build the Heat Master
@@ -210,13 +213,13 @@ elif st.session_state.mode == "intake":
     st.write("")
     c1, c2 = st.columns(2)
     with c1:
-        st.markdown('<div class="source-card mill"><div class="doc-type">🔵 Mill Cert</div>Beta / Charter Steel — Chemistry & Heat Number</div>', unsafe_allow_html=True)
+        st.markdown('<div class="source-card mill"><div class="doc-type">🔵 Mill Cert</div>Steel Supplier — Chemistry & Heat Number</div>', unsafe_allow_html=True)
     with c2:
-        st.markdown('<div class="source-card lab"><div class="doc-type">🟡 Lab Report</div>Titan Metallurgy — Tensile Test Results</div>', unsafe_allow_html=True)
+        st.markdown('<div class="source-card lab"><div class="doc-type">🟡 Lab Report</div>Testing Laboratory — Tensile Test Results</div>', unsafe_allow_html=True)
 
     st.write("")
     files = st.file_uploader("Drop mill certs and/or lab reports here",
-                              type=["pdf","png","jpg","jpeg"], accept_multiple_files=True, key="intake_upload")
+                             type=["pdf","png","jpg","jpeg"], accept_multiple_files=True, key="intake_upload")
 
     if files and st.button("🚀 Extract & Save to Database"):
         import traceback
@@ -254,11 +257,11 @@ elif st.session_state.mode == "intake":
             finally:
                 if os.path.exists(tmp):
                     os.remove(tmp)
+
         progress.progress(1.0, "Done!")
         st.write("---")
         st.write(f"Total documents extracted: {len(st.session_state.intake_docs)}")
 
-    # Show results & save
     if st.session_state.intake_docs:
         st.write("")
         for doc in st.session_state.intake_docs:
@@ -269,14 +272,12 @@ elif st.session_state.mode == "intake":
             with st.expander(f"Raw data — {doc['filename']}"):
                 st.json(doc["data"])
 
-        # Build a preview record
         cert = reconcile_heat_record(st.session_state.intake_mill, st.session_state.intake_lab, None)
         heat = cert.get("heat_number", "?")
 
         st.write("")
         st.markdown(f"#### Heat #{heat} — Data Preview")
 
-        # Determine status
         has_chem = st.session_state.intake_mill is not None
         has_lab = st.session_state.intake_lab is not None
         if has_chem and has_lab:
@@ -284,14 +285,13 @@ elif st.session_state.mode == "intake":
             st.success("✅ Chemistry + Mechanicals — Ready for customer certs")
         elif has_chem:
             status = "Awaiting Lab"
-            st.warning("🔶 Chemistry loaded — Awaiting Titan lab results")
+            st.warning("🔶 Chemistry loaded — Awaiting lab results")
         elif has_lab:
             status = "Chemistry Missing"
             st.warning("🔶 Lab results loaded — Mill cert still needed")
         else:
             status = "Empty"
 
-        # Editable preview
         col_l, col_r = st.columns(2)
         with col_l:
             st.markdown("**Chemistry**")
@@ -299,23 +299,22 @@ elif st.session_state.mode == "intake":
             for i, k in enumerate(["c","mn","si","p","s","cr","ni","mo"]):
                 with cc[i%4]:
                     cert[k] = st.text_input(k.upper(), value=str(cert.get(k,"") or ""), key=f"in_{k}_{cert.get('heat_number','x')}")
+
         with col_r:
             st.markdown("**Mechanicals**")
             cert["grade"] = st.text_input("Grade", value=str(cert.get("grade","") or ""), key=f"in_grade_{cert.get('heat_number','x')}")
 
-            # Lab sample selector
             lab = st.session_state.intake_lab
             if lab and lab.get("samples") and len(lab["samples"]) > 1:
                 samples = lab["samples"]
                 opts = [f"Sample {i+1}: {s.get('sample_id','?')} — Ø{s.get('size','?')}\" — {s.get('tensile_psi','?')} psi" for i,s in enumerate(samples)]
                 sel = st.radio("Test specimen (defaults to Sample 1):", opts, index=0, key="in_sample")
                 idx = opts.index(sel)
-                # Force re-reconcile and rebuild cert with selected sample
                 cert = reconcile_heat_record(st.session_state.intake_mill, lab, None, selected_sample_idx=idx)
-                st.info(f"📊 Lab values loaded: Tensile={cert.get('tensile')}, Yield={cert.get('yield_strength')}, Elongation={cert.get('elongation')}, Reduction={cert.get('reduction')}")
+                st.info(f"📊 Lab values: Tensile={cert.get('tensile')}, Yield={cert.get('yield_strength')}, Elongation={cert.get('elongation')}, Reduction={cert.get('reduction')}")
             elif lab and lab.get("samples"):
                 cert = reconcile_heat_record(st.session_state.intake_mill, lab, None, selected_sample_idx=0)
-                st.info(f"📊 Lab values loaded: Tensile={cert.get('tensile')}, Yield={cert.get('yield_strength')}, Elongation={cert.get('elongation')}, Reduction={cert.get('reduction')}")
+                st.info(f"📊 Lab values: Tensile={cert.get('tensile')}, Yield={cert.get('yield_strength')}, Elongation={cert.get('elongation')}, Reduction={cert.get('reduction')}")
 
             mc = st.columns(2)
             with mc[0]:
@@ -325,42 +324,35 @@ elif st.session_state.mode == "intake":
                 cert["elongation"] = st.text_input("Elongation %", value=str(cert.get("elongation","") or ""), key=f"in_e_{cert.get('heat_number','x')}")
                 cert["reduction"] = st.text_input("Reduction %", value=str(cert.get("reduction","") or ""), key=f"in_r_{cert.get('heat_number','x')}")
 
-        # CRITICAL: Persist the FULLY reconciled cert (including lab sample mechanicals) to session state
-        # This must come AFTER the sample selector and mechanical text inputs so we capture the latest values
         st.session_state["preview_cert"] = dict(cert)
 
         if SHEETS_ENABLED:
             st.write("")
             if st.button(f"💾 Save Heat #{heat} to Database"):
-                # Rebuild cert FRESH from session state mill+lab data right at save time
-                # This guarantees we get the latest lab sample selection
                 sample_idx = 0
                 if st.session_state.intake_lab and st.session_state.intake_lab.get("samples"):
                     samples = st.session_state.intake_lab["samples"]
                     if len(samples) > 1:
-                        # Try to read the radio button selection from session state
-                        sel_key = f"in_sample"
+                        sel_key = "in_sample"
                         if sel_key in st.session_state:
                             sel_val = st.session_state[sel_key]
                             for i, s in enumerate(samples):
                                 if s.get("sample_id","") in sel_val:
                                     sample_idx = i
                                     break
+
                 cert_to_save = reconcile_heat_record(
                     st.session_state.intake_mill,
                     st.session_state.intake_lab,
                     None,
                     selected_sample_idx=sample_idx,
                 )
-                st.write("DEBUG - About to save:")
-                st.json({k: cert_to_save.get(k, "MISSING") for k in ["heat_number","grade","c","mn","si","p","s","cr","ni","mo","tensile","yield_strength","elongation","reduction"]})
                 ok = save_heat_master(cert_to_save, status=status)
                 if ok:
                     st.success(f"✅ Heat #{heat} saved to Heat Master! Status: **{status}**")
                     st.balloons()
         else:
             st.info("Google Sheets not configured — data won't persist. See DEPLOY.md.")
-
 
 # ================================================================
 # MODE 2: GENERATE CERT — From database + invoice
@@ -378,37 +370,33 @@ elif st.session_state.mode == "cert":
     # ── Step 1: Select heat ──
     if cert_step == 1:
         st.subheader("📄 Generate Cert — Step 1: Select Heat")
-
         tab_db, tab_upload = st.tabs(["🔍 From Database", "📁 Upload All Documents"])
 
         with tab_db:
             if SHEETS_ENABLED:
                 heats = get_all_heats()
                 complete_heats = [h for h in heats if h.get("Status") == "Complete"]
-
                 if complete_heats:
                     heat_options = [f"{h['Heat Number']} — {h.get('Grade','')} — saved {h.get('Date Added','')}" for h in complete_heats]
                     selected = st.selectbox("Select a heat from the database:", heat_options)
                     idx = heat_options.index(selected)
                     chosen = complete_heats[idx]
-
                     with st.expander("Preview heat data"):
                         st.json(chosen)
-
                     if st.button("Use this heat →"):
                         cert = build_cert_from_sheets_row(chosen)
                         st.session_state.cert_record = cert
                         st.session_state.cert_step = 2
                         st.rerun()
                 else:
-                    st.warning("No complete heats in the database yet. Use Intake mode to add mill certs and lab reports first, or use the 'Upload All Documents' tab.")
+                    st.warning("No complete heats in the database yet. Use Intake mode to add mill certs and lab reports first.")
             else:
                 st.info("Google Sheets not configured. Use the 'Upload All Documents' tab instead.")
 
         with tab_upload:
-            st.caption("Upload mill cert + lab report + invoice all at once (original workflow).")
+            st.caption("Upload mill cert + lab report + invoice all at once.")
             files = st.file_uploader("Drop all documents", type=["pdf","png","jpg","jpeg"],
-                                      accept_multiple_files=True, key="cert_upload")
+                                     accept_multiple_files=True, key="cert_upload")
             if files and st.button("🚀 Extract All"):
                 mill = lab = inv = None
                 progress = st.progress(0)
@@ -425,20 +413,19 @@ elif st.session_state.mode == "cert":
                 progress.progress(1.0, "✅ Done!")
                 cert = reconcile_heat_record(mill, lab, inv)
                 st.session_state.cert_record = cert
-                st.session_state.cert_step = 3  # Skip to review
+                st.session_state.cert_step = 3
                 st.rerun()
 
     # ── Step 2: Add invoice details ──
     elif cert_step == 2:
         st.subheader("📄 Generate Cert — Step 2: Add Invoice Details")
         cert = st.session_state.cert_record
-
         st.info(f"Heat **#{cert.get('heat_number')}** loaded from database. Now add the customer order details.")
 
         tab_scan, tab_manual = st.tabs(["📁 Upload Invoice", "✏️ Enter Manually"])
 
         with tab_scan:
-            inv_file = st.file_uploader("Drop the Cox invoice here", type=["pdf","png","jpg","jpeg"], key="inv_upload")
+            inv_file = st.file_uploader("Drop the invoice here", type=["pdf","png","jpg","jpeg"], key="inv_upload")
             if inv_file and st.button("🚀 Extract Invoice"):
                 tmp = f"temp_{inv_file.name}"
                 with open(tmp,"wb") as fh: fh.write(inv_file.getbuffer())
@@ -446,7 +433,6 @@ elif st.session_state.mode == "cert":
                     dt, data = extract_document(tmp)
                 if os.path.exists(tmp): os.remove(tmp)
                 if data and dt == "invoice":
-                    # Merge invoice into cert
                     cert["customer"] = data.get("customer_name","") or ""
                     cert["purchase_order"] = data.get("customer_po","") or ""
                     cert["invoice_number"] = data.get("invoice_number","") or ""
@@ -458,7 +444,7 @@ elif st.session_state.mode == "cert":
                         cert["part_number"] = matched.get("part_number","") or ""
                         cert["part_description"] = matched.get("part_description","") or ""
                         cert["quantity"] = matched.get("quantity","") or ""
-                    cert["sources"]["order_details"] = f"Invoice #{cert['invoice_number']}"
+                        cert["sources"]["order_details"] = f"Invoice #{cert['invoice_number']}"
                     st.session_state.cert_record = cert
                     st.success("✅ Invoice data merged!")
                     st.session_state.cert_step = 3
@@ -478,10 +464,8 @@ elif st.session_state.mode == "cert":
                 cert["part_number"] = st.text_input("Part #", cert.get("part_number",""), key="m_pn")
                 cert["quantity"] = st.text_input("Quantity", cert.get("quantity",""), key="m_qty")
                 cert["part_description"] = st.text_input("Part Description", cert.get("part_description",""), key="m_desc")
-
             cert["sources"]["order_details"] = "Manual entry"
             st.session_state.cert_record = cert
-
             if st.button("Review Cert →"):
                 st.session_state.cert_step = 3
                 st.rerun()
@@ -509,6 +493,7 @@ elif st.session_state.mode == "cert":
             for i, k in enumerate(["c","mn","si","p","s","cr","ni","mo"]):
                 with cc[i%4]:
                     cert[k] = st.text_input(k.upper(), cert.get(k,""), key=f"r_{k}")
+
             st.markdown("#### Mechanicals")
             cert["grade"] = st.text_input("AISI Grade", cert.get("grade",""), key="r_grade")
             mc = st.columns(2)
@@ -586,21 +571,22 @@ elif st.session_state.mode == "cert":
             with pd.ExcelWriter(buf, engine="openpyxl") as w:
                 pd.DataFrame([flat]).to_excel(w, index=False, sheet_name="Cert_Data")
             st.download_button("📥 Excel", buf.getvalue(),
-                file_name=f"Cox_Cert_{cert.get('heat_number','x')}.xlsx",
-                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                               file_name=f"MimirMetals_Cert_{cert.get('heat_number','x')}.xlsx",
+                               mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
         with dc[1]:
             st.download_button("📥 JSON",
-                json.dumps({k:v for k,v in cert.items() if k!="sources"}, indent=2),
-                file_name=f"Cox_Cert_{cert.get('heat_number','x')}.json", mime="application/json")
+                               json.dumps({k:v for k,v in cert.items() if k!="sources"}, indent=2),
+                               file_name=f"MimirMetals_Cert_{cert.get('heat_number','x')}.json",
+                               mime="application/json")
         with dc[2]:
             try:
                 with open("template.html","r") as f: h = Template(f.read()).render(**cert)
                 st.download_button("📥 HTML (Print to PDF)", h,
-                    file_name=f"Cox_Cert_{cert.get('heat_number','x')}.html", mime="text/html")
+                                   file_name=f"MimirMetals_Cert_{cert.get('heat_number','x')}.html",
+                                   mime="text/html")
             except: pass
 
         st.info("💡 Open the HTML download in your browser → Print → Save as PDF")
-
         st.write("")
         nav = st.columns([1,1,2])
         with nav[0]:
@@ -612,5 +598,4 @@ elif st.session_state.mode == "cert":
                 st.session_state.invoice_data = None
                 st.rerun()
 
-
-st.markdown('<div class="cox-footer">Cox Industries · 24700 Wood CT, Macomb MI 48042 · Powered by Mimir Logic</div>', unsafe_allow_html=True)
+st.markdown('<div class="ml-footer">MIMIR METALS · POWERED BY MIMIR LOGIC · BUILT BY THE PEOPLE WHO RUN THE MACHINES</div>', unsafe_allow_html=True)
